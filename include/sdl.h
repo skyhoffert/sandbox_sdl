@@ -50,10 +50,6 @@ void sdl_init()
 
 	int rendererFlags, windowFlags;
 
-	rendererFlags = 0 | SDL_RENDERER_ACCELERATED;
-
-	windowFlags = 0 | SDL_WINDOW_SHOWN;
-
   g.errno = SDL_Init(SDL_INIT_VIDEO);
 
 	if (g.errno < 0)
@@ -65,6 +61,14 @@ void sdl_init()
     return;
 
 	}
+
+  SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
+  SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );
+  SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
+  SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
+  SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+
+	windowFlags = 0 | SDL_WINDOW_SHOWN;
 
 	app.window = SDL_CreateWindow("SDL Test", SDL_WINDOWPOS_UNDEFINED,
     SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, windowFlags);
@@ -82,6 +86,8 @@ void sdl_init()
 
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
 
+	rendererFlags = 0 | SDL_RENDERER_ACCELERATED;
+
 	app.renderer = SDL_CreateRenderer(app.window, -1, rendererFlags);
 
 	if (!app.renderer)
@@ -95,6 +101,9 @@ void sdl_init()
 	}
 
   app.screen = SDL_GetWindowSurface(app.window);
+
+  g.frames = 0;
+  g.frame_timer_start = Millis();
 
   g.errno = 0;
 
@@ -133,7 +142,14 @@ void sdl_check()
     else if (event.type == SDL_KEYDOWN)
     {
 
-      printf("k,");
+      printf("kd[%c],", event.key.keysym.sym);
+      fflush(stdout);
+
+    }
+    else if (event.type == SDL_KEYUP)
+    {
+
+      printf("ku[%c],", event.key.keysym.sym);
       fflush(stdout);
 
     }
@@ -141,6 +157,18 @@ void sdl_check()
   }
 
   sdl_delay();
+
+  g.frames++;
+  
+  uint64_t now = Millis();
+  if (now - g.frame_timer_start > 2000) {
+    float frames_f = (float) g.frames;
+    float dur = (now - g.frame_timer_start) / 1000;
+    float fps = frames_f / dur;
+    printf("FPS: %.1f\n", fps);
+    g.frame_timer_start = now;
+    g.frames = 0;
+  }
 
   g.errno = 0;
 
