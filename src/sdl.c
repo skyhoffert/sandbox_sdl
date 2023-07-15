@@ -57,7 +57,7 @@ int main()
 
   sdl_close();
 
-  close();
+  sdlclose();
 
   return 0;
 

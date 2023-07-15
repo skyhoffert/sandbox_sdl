@@ -66,8 +66,8 @@ void test_image_check()
   test_image.tex_pos.h = (int) test_image.height;
 
   // In order to keep the image on screen, detect bounds and bounce velocity off.
-  float out_x = (test_image.x + test_image.width) - SCREEN_WIDTH;
-  float out_y = (test_image.y + test_image.height) - SCREEN_HEIGHT;
+  float out_x = (test_image.x + test_image.width) - scr_width;
+  float out_y = (test_image.y + test_image.height) - scr_height;
 
   if (out_x > 0) {
     test_image.vx = -test_image.vx;
@@ -92,6 +92,20 @@ void test_image_check()
   test_image.tex_pos.y = (int) test_image.y;
 
   SDL_RenderCopy(app.renderer, test_image.tex, NULL, &test_image.tex_pos);
+
+  SDL_Rect portion;
+  portion.x = 250;
+  portion.y = 150;
+  portion.w = 200;
+  portion.h = 200;
+
+  SDL_Rect screenpos;
+  screenpos.x = scr_width-60;
+  screenpos.y = scr_height-60;
+  screenpos.w = 60;
+  screenpos.h = 60;
+
+  SDL_RenderCopyEx(app.renderer, test_image.tex, &portion, &screenpos, 45, NULL, SDL_FLIP_NONE);
 
   g.errno = 0;
 

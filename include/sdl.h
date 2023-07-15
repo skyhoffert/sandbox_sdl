@@ -17,7 +17,7 @@ void init()
 
 }
 
-void close()
+void sdlclose()
 {
 
   printf("Exiting sdl.\n");
@@ -33,6 +33,9 @@ void close()
 #define SCREEN_WIDTH 600
 #define SCREEN_HEIGHT 400
 #define DELAY_TIME 1000.0 / 60.0
+
+int scr_width = SCREEN_WIDTH;
+int scr_height = SCREEN_HEIGHT;
 
 void sdl_delay()
 {
@@ -68,7 +71,7 @@ void sdl_init()
   SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
   SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 
-	windowFlags = 0 | SDL_WINDOW_SHOWN;
+	windowFlags = 0 | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL;
 
 	app.window = SDL_CreateWindow("SDL Test", SDL_WINDOWPOS_UNDEFINED,
     SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, windowFlags);
@@ -152,6 +155,15 @@ void sdl_check()
       printf("ku[%c],", event.key.keysym.sym);
       fflush(stdout);
 
+    }
+    else if (event.type == SDL_WINDOWEVENT)
+    {
+      if (event.window.event == SDL_WINDOWEVENT_RESIZED)
+      {
+        //printf("MESSAGE:Resizing window... (%d,%d)\n", event.window.data1, event.window.data2);
+        scr_width = event.window.data1;
+        scr_height = event.window.data2;
+      }
     }
 
   }
